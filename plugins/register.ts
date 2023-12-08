@@ -1,5 +1,5 @@
 import { pluginManager } from "../src/plugin";
-import { sc_send } from "../src/serverPush";
+import { sc_send } from "./serverPush";
 const registerAll = () => {
   pluginManager.register({
     name: "push",

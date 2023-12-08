@@ -6,7 +6,7 @@ import { randomInt } from 'node:crypto'
 import { writeFile } from 'node:fs'
 import 'dotenv/config'
 import { pluginManager } from './plugin'
-import { registerAll } from '../plugins/plugin'
+import { registerAll } from '../plugins/register'
 let cookies: string[] = []
 registerAll()
 
