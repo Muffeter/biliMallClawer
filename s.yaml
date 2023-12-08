@@ -1,0 +1,94 @@
+edition: 2.0.0
+name: bili-mall
+access: "fc"
+
+vars:
+  KEY: ${env.KEY}
+  COOKIE: ${env.COOKIE}
+  service:
+    name: biliDeployMall
+    description: "bili-deploy-mall"
+actions:
+  pre-deploy:
+    - run: node ./build.js
+      path: ./
+
+services:
+  biliMall1:
+    component: devsapp/fc
+    props:
+      region: cn-hangzhou
+      service:
+        name: ${vars.service.name}
+        internetAccess: true
+      function:
+        name: bili-mall-req-miyu
+        runtime: nodejs16
+        codeUri: "./dist/index.js"
+        handler: "index.handler"
+        memorySize: 128
+        timeout: 3600
+        environmentVariables:
+          KEY: ${vars.KEY}
+          SEARCHITEM: "米浴"
+          COOKIE: ${vars.COOKIE}
+          PRICE: "90000"
+          SEARCHTIME: "400"
+      triggers:
+        - name: everyTwoHours
+          type: timer
+          config:
+            cronExpression: "0 0 */1 * * * "
+            enable: true
+  biliMall2:
+    component: devsapp/fc
+    props:
+      region: cn-hangzhou
+      service:
+        name: ${vars.service.name}
+        internetAccess: true
+      function:
+        name: bili-mall-req-lijian
+        runtime: nodejs16
+        codeUri: "./dist/index.js"
+        handler: "index.handler"
+        memorySize: 128
+        timeout: 3600
+        environmentVariables:
+          KEY: ${vars.KEY}
+          SEARCHITEM: "里见"
+          COOKIE: ${vars.COOKIE}
+          PRICE: "70000"
+          SEARCHTIME: "400"
+      triggers:
+        - name: everyTwoHours
+          type: timer
+          config:
+            cronExpression: "0 0 */1 * * * "
+            enable: true
+  biliMall3:
+    component: devsapp/fc
+    props:
+      region: cn-hangzhou
+      service:
+        name: ${vars.service.name}
+        internetAccess: true
+      function:
+        name: bili-mall-req-chazuo
+        runtime: nodejs16
+        codeUri: "./dist/index.js"
+        handler: "index.handler"
+        memorySize: 128
+        timeout: 3600
+        environmentVariables:
+          KEY: ${vars.KEY}
+          SEARCHITEM: "BANPRESTO"
+          COOKIE: ${vars.COOKIE}
+          PRICE: "5000"
+          SEARCHTIME: "400"
+      triggers:
+        - name: everyTwoHours
+          type: timer
+          config:
+            cronExpression: "0 0 */1 * * * "
+            enable: true
