@@ -3,6 +3,7 @@ import { AxiosRequestConfig } from 'axios'
 import { item } from './type'
 import { getCurrentTime, log, sleep, toArray } from './utils'
 import { randomInt } from 'node:crypto'
+import { writeFile } from 'node:fs'
 import 'dotenv/config'
 import { pluginManager } from './plugin'
 import { registerAll } from '../plugins/plugin'
@@ -73,9 +74,15 @@ export const searchByName = async (names: string[] | string, searchTime: number,
 		"Name": i.c2cItemsName,
 		"Price": i.price,
 	})))
-	pluginManager.invoke("push", `${getCurrentTime()}-Search-${names}`, sendMsg, process.env.KEY)
-	// fs.writeFile("./result", JSON.stringify(result))
-	// console.log("write Ok");
+
+	if (process.env.LOCAL === "true") {
+		writeFile("./result", sendMsg, () => {
+			console.log("write Ok");
+		})
+	} else {
+		pluginManager.invoke("push", `${getCurrentTime()}-Search-${names}`, sendMsg, process.env.KEY)
+
+	}
 }
 //params: 
 //name: string [the name u want to search, the result item's name will include the value name]
@@ -107,7 +114,7 @@ export const handler = async function (event, context, callback) {
 	await searchByName(searchItem, searchTime, 2500)
 	callback(null, "Finish");
 };
-// for serverless function call
-handler("", "", (n: null, msg: string) => {
+// for local call
+process.env.LOCAL === "true" && handler("", "", (n: null, msg: string) => {
 	log(msg)
 })
